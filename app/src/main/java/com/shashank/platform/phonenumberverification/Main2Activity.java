@@ -14,129 +14,157 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 public class Main2Activity extends AppCompatActivity {
-
-    TextView otp;
-    EditText otp_box_1,otp_box_2,otp_box_3,otp_box_4,otp_box_5,otp_box_6;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(R.layout.activity_main2);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-        otp = findViewById(R.id.otp);
-        otp_box_1 = findViewById(R.id.otp_box_1);
-        otp_box_2 = findViewById(R.id.otp_box_2);
-        otp_box_3 = findViewById(R.id.otp_box_3);
-        otp_box_4 = findViewById(R.id.otp_box_4);
-        otp_box_5 = findViewById(R.id.otp_box_5);
-        otp_box_6 = findViewById(R.id.otp_box_6);
-        otp.setText(Html.fromHtml(getResources().getString(R.string.otp1)));
-        otp_box_1.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-                if(editable!=null){
-                    if(editable.length()==1)
-                        otp_box_2.requestFocus();
-                }
-            }
-        });
-        otp_box_2.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                if(editable!=null){
-                    if(editable.length()==1)
-                        otp_box_3.requestFocus();
-                }
-            }
-        });
-        otp_box_3.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                if(editable!=null){
-                    if(editable.length()==1)
-                        otp_box_4.requestFocus();
-                }
-            }
-        });
-        otp_box_4.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                if(editable!=null){
-                    if(editable.length()==1)
-                        otp_box_5.requestFocus();
-                }
-            }
-        });
-        otp_box_5.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                if(editable!=null){
-                    if(editable.length()==1)
-                        otp_box_6.requestFocus();
-                }
-            }
-        });
-
-    }
+	
+	//Instance variables prefixed which tells what the component actually is, which other would be confusing
+	
+	private TextView tvOtpInstruction;
+	private TextView tvMobileNumber;
+	
+	private EditText etOtpBox1;
+	private EditText etOtpBox2;
+	private EditText etOtpBox3;
+	private EditText etOtpBox4;
+	private EditText etOtpBox5;
+	private EditText etOtpBox6;
+	
+	private String mobileNumber = "";
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		setContentView(R.layout.activity_main2);
+		
+		Bundle bundle = getIntent().getExtras();
+		if (bundle != null) {
+			mobileNumber = bundle.getString(MainActivity.MOBILE_NUMBER);
+			if (mobileNumber != null) {
+				//Error
+			}
+		}
+		
+		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+		setSupportActionBar(toolbar);
+		toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
+		toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				finish();
+			}
+		});
+		
+		tvOtpInstruction = findViewById(R.id.otp);
+		tvMobileNumber = findViewById(R.id.tvMobileNumber);
+		
+		etOtpBox1 = findViewById(R.id.otp_box_1);
+		etOtpBox2 = findViewById(R.id.otp_box_2);
+		etOtpBox3 = findViewById(R.id.otp_box_3);
+		etOtpBox4 = findViewById(R.id.otp_box_4);
+		etOtpBox5 = findViewById(R.id.otp_box_5);
+		etOtpBox6 = findViewById(R.id.otp_box_6);
+		
+		String promptMessage = getResources().getString(R.string.otp1);
+		tvOtpInstruction.setText(Html.fromHtml(promptMessage));
+		
+		tvMobileNumber.setText(mobileNumber);
+		
+		etOtpBox1.addTextChangedListener(new TextWatcher() {
+			@Override
+			public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+			
+			}
+			
+			@Override
+			public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+			
+			}
+			
+			@Override
+			public void afterTextChanged(Editable editable) {
+				
+				if (editable != null) {
+					if (editable.length() == 1)
+						etOtpBox2.requestFocus();
+				}
+			}
+		});
+		etOtpBox2.addTextChangedListener(new TextWatcher() {
+			@Override
+			public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+			
+			}
+			
+			@Override
+			public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+			
+			}
+			
+			@Override
+			public void afterTextChanged(Editable editable) {
+				if (editable != null) {
+					if (editable.length() == 1)
+						etOtpBox3.requestFocus();
+				}
+			}
+		});
+		etOtpBox3.addTextChangedListener(new TextWatcher() {
+			@Override
+			public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+			
+			}
+			
+			@Override
+			public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+			
+			}
+			
+			@Override
+			public void afterTextChanged(Editable editable) {
+				if (editable != null) {
+					if (editable.length() == 1)
+						etOtpBox4.requestFocus();
+				}
+			}
+		});
+		etOtpBox4.addTextChangedListener(new TextWatcher() {
+			@Override
+			public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+			
+			}
+			
+			@Override
+			public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+			
+			}
+			
+			@Override
+			public void afterTextChanged(Editable editable) {
+				if (editable != null) {
+					if (editable.length() == 1)
+						etOtpBox5.requestFocus();
+				}
+			}
+		});
+		etOtpBox5.addTextChangedListener(new TextWatcher() {
+			@Override
+			public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+			
+			}
+			
+			@Override
+			public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+			
+			}
+			
+			@Override
+			public void afterTextChanged(Editable editable) {
+				if (editable != null) {
+					if (editable.length() == 1)
+						etOtpBox6.requestFocus();
+				}
+			}
+		});
+		
+	}
 }
