@@ -69,6 +69,8 @@
                     android:lineSpacingExtra="6dp"
                     android:textAlignment="center"
                     android:textSize="16sp" />
+                
+                
 
                 <TextView
                         android:id="@+id/tvMobileNumber"
@@ -229,6 +231,15 @@
 
                 </LinearLayout>
 
+                <ProgressBar
+                        android:id="@+id/pbLoading"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center"
+                        android:layout_margin="4dp"
+                        android:visibility="invisible"
+                        />
+                
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

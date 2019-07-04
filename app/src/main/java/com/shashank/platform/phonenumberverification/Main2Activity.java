@@ -1,17 +1,16 @@
 package com.shashank.platform.phonenumberverification;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,12 +44,36 @@ public class Main2Activity extends AppCompatActivity {
 	private EditText etOtpBox5;
 	private EditText etOtpBox6;
 	
+	private ProgressBar loadingProgressBar;
+	
 	private Button btnVerify;
 	
 	private String mobileNumber = "";
 	
 	private FirebaseAuth mAuth;
-	
+	private PhoneAuthProvider.OnVerificationStateChangedCallbacks
+		mCallBack = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+		
+		@Override
+		public void onCodeSent(String s, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
+			super.onCodeSent(s, forceResendingToken);
+			verificationId = s;
+		}
+		
+		@Override
+		public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
+			String code = phoneAuthCredential.getSmsCode();
+			if (code != null) {
+				setCodeToEditTexts(code);
+				verifyCode(code);
+			}
+		}
+		
+		@Override
+		public void onVerificationFailed(FirebaseException e) {
+			Toast.makeText(Main2Activity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+		}
+	};
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -67,8 +90,7 @@ public class Main2Activity extends AppCompatActivity {
 	
 	
 	/**
-	 *      Retrieves the mobile number to which the verification code is supposed to be received
-	 *
+	 * Retrieves the mobile number to which the verification code is supposed to be received
 	 */
 	private void getExtrasFromBundle() {
 		
@@ -83,11 +105,12 @@ public class Main2Activity extends AppCompatActivity {
 	}
 	
 	
-	/*
-	*       Initializes all widgets and variables and sets up required listeners
-	*
-	* */
 	
+	
+	/*
+	 *       Initializes all widgets and variables and sets up required listeners
+	 *
+	 * */
 	private void initialize() {
 		
 		mAuth = FirebaseAuth.getInstance();
@@ -111,6 +134,8 @@ public class Main2Activity extends AppCompatActivity {
 		etOtpBox4 = findViewById(R.id.otp_box_4);
 		etOtpBox5 = findViewById(R.id.otp_box_5);
 		etOtpBox6 = findViewById(R.id.otp_box_6);
+		
+		loadingProgressBar = findViewById(R.id.pbLoading);
 		
 		btnVerify = findViewById(R.id.verify);
 		
@@ -170,7 +195,6 @@ public class Main2Activity extends AppCompatActivity {
 				}
 				
 				
-				
 				if (TextUtils.isEmpty(etOtpBox6.getText().toString())) {
 					Toast.makeText(Main2Activity.this, "Please enter full code ", Toast.LENGTH_LONG)
 						.show();
@@ -184,7 +208,6 @@ public class Main2Activity extends AppCompatActivity {
 				
 			}
 		});
-		
 		
 		
 		etOtpBox1.addTextChangedListener(new TextWatcher() {
@@ -291,17 +314,18 @@ public class Main2Activity extends AppCompatActivity {
 				}
 			}
 		});
-	
-	
+		
+		
 	}
 	
+	
+	
 	/**
-	 *      Initiates the process of sending the verification code on the mobile number entered by the user in previous activity
+	 * Initiates the process of sending the verification code on the mobile number entered by the user in previous activity
 	 */
-	
 	private void sendVerificationCode(String number) {
-		//Todo : show progress bar here
-	
+		loadingProgressBar.setVisibility(View.VISIBLE);
+		
 		PhoneAuthProvider.getInstance().verifyPhoneNumber(
 			number,
 			60,
@@ -312,37 +336,11 @@ public class Main2Activity extends AppCompatActivity {
 		
 	}
 	
-	
-	private PhoneAuthProvider.OnVerificationStateChangedCallbacks
-		mCallBack = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-		
-		@Override
-		public void onCodeSent(String s, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
-			super.onCodeSent(s, forceResendingToken);
-			verificationId = s;
-		}
-		
-		@Override
-		public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
-			String code = phoneAuthCredential.getSmsCode();
-			if (code != null) {
-				setCodeToEditTexts(code);
-				verifyCode(code);
-			}
-		}
-		
-		@Override
-		public void onVerificationFailed(FirebaseException e) {
-			Toast.makeText(Main2Activity.this, e.getMessage(), Toast.LENGTH_LONG).show();
-		}
-	};
-	
-	
-	
 	private void verifyCode(String code) {
 		PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationId, code);
 		signInWithCredential(credential);
 	}
+	
 	
 	private void signInWithCredential(PhoneAuthCredential credential) {
 		mAuth.signInWithCredential(credential)
@@ -355,10 +353,11 @@ public class Main2Activity extends AppCompatActivity {
 					} else {
 						Toast.makeText(Main2Activity.this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
 					}
+					
+					loadingProgressBar.setVisibility(View.INVISIBLE);
 				}
 			});
 	}
-	
 	
 	
 	private void setCodeToEditTexts(String code) {
@@ -366,12 +365,12 @@ public class Main2Activity extends AppCompatActivity {
 		//Assuming code length is 6
 		if (code.length() == 6) {
 			
-			etOtpBox1.setText(code.substring(0 ,1));
-			etOtpBox2.setText(code.substring(1 ,2));
-			etOtpBox3.setText(code.substring(2 ,3));
-			etOtpBox4.setText(code.substring(3 ,4));
-			etOtpBox5.setText(code.substring(4 ,5));
-			etOtpBox6.setText(code.substring(5 ,6));
+			etOtpBox1.setText(code.substring(0, 1));
+			etOtpBox2.setText(code.substring(1, 2));
+			etOtpBox3.setText(code.substring(2, 3));
+			etOtpBox4.setText(code.substring(3, 4));
+			etOtpBox5.setText(code.substring(4, 5));
+			etOtpBox6.setText(code.substring(5, 6));
 			
 		}
 		
