@@ -17,7 +17,6 @@ import androidx.appcompat.widget.Toolbar;
 
 public class MainActivity extends AppCompatActivity {
 	
-	//Instance variables prefixed which tells what the component actually is, which other would be confusing
 	private TextView tvOtpInstruction;
 	private Button btnGenerateOtp;
 	private EditText etMobileNumber;
@@ -52,12 +51,12 @@ public class MainActivity extends AppCompatActivity {
 		btnGenerateOtp.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				if (TextUtils.isEmpty(etMobileNumber.getText().toString()))                    //Using TextUtils will not only make sure for empty string but also for a string with just spaces
+				if (TextUtils.isEmpty(etMobileNumber.getText().toString()))
 					Toast.makeText(getApplicationContext(), "Please enter the mobile no.", Toast.LENGTH_SHORT).show();
 				else if (etMobileNumber.getText().length() < 10)
 					Toast.makeText(getApplicationContext(), "Please enter correct mobile no.", Toast.LENGTH_SHORT).show();
 				else {
-					Intent intent = new Intent(MainActivity.this, Main2Activity.class);             //"this" should be used as long as possible, getApplicationContext() should be passed when instantiating a service or a background task which doesn't have a UI element associated with it
+					Intent intent = new Intent(MainActivity.this, Main2Activity.class);
 					intent.putExtra(MOBILE_NUMBER, indiaCode + etMobileNumber.getText().toString());
 					startActivity(intent);
 				}

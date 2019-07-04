@@ -78,6 +78,7 @@
                         android:layout_gravity="center"
                         android:textSize="16sp"
                         android:fontFamily="@font/gotham"
+                        android:focusableInTouchMode="true"
                         />
                 
                 <LinearLayout
